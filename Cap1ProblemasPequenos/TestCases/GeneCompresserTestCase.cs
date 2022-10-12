@@ -14,7 +14,8 @@ namespace Cap1ProblemasPequenos.TestCases
 
         public void RunTest()
         {
-            new GeneCompresser("TTTAAACGTACGTT");
+            new GeneCompresser("TTTAAACGTACGTTACGAAAATTT");
+            // new GeneCompresser("T");
         }
     }
 }

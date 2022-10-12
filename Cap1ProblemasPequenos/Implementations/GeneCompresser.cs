@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using System.Runtime.InteropServices;
 
 namespace Cap1ProblemasPequenos.Implementations
 {
@@ -7,9 +8,8 @@ namespace Cap1ProblemasPequenos.Implementations
     ///</summary>
     public class GeneCompresser
     {
+        public long CompressedBytes { get; set; } = 1;
         public Dictionary<char, byte> GeneValues { get; set; } = new Dictionary<char, byte>();
-
-        public Queue<byte> CompressedBytes = new Queue<byte>();
 
         public GeneCompresser(string compressedValue)
         {
@@ -27,6 +27,8 @@ namespace Cap1ProblemasPequenos.Implementations
             GeneValues.Add('G', 0b10);
             GeneValues.Add('T', 0b11);
         }
+
+        private int GetCompressedGeneSize() => Convert.ToString(CompressedBytes, 2).ToArray().Length;
         private void Compress(string value)
         {
             var stopwatch = new Stopwatch();
@@ -34,8 +36,13 @@ namespace Cap1ProblemasPequenos.Implementations
             stopwatch.Start();
             System.Console.WriteLine("Inicio de compressão");
 
+            var teste = new List<byte>();
+
             foreach (var charFromValue in value.ToUpper())
             {
+
+                CompressedBytes <<= 2;
+
                 var byteToEnqueue = GeneValues.FirstOrDefault(gene => gene.Key == charFromValue);
 
                 if (byteToEnqueue.Key == 0)
@@ -45,19 +52,17 @@ namespace Cap1ProblemasPequenos.Implementations
                     break;
                 }
 
-                CompressedBytes.Enqueue(byteToEnqueue.Value);
+                CompressedBytes |= byteToEnqueue.Value;
             }
 
             stopwatch.Stop();
 
             System.Console.WriteLine("Tempo de compressão: " + stopwatch.Elapsed.ToString());
 
-            System.Console.WriteLine("Tamanho do gene após compressão: " + GetSizeOfCompressedBytes());
+            System.Console.WriteLine("Tamanho do gene após compressão: " + Marshal.SizeOf(CompressedBytes));
 
-            System.Console.WriteLine("Comprimido! - " + string.Join("", CompressedBytes));
+            System.Console.WriteLine("Comprimido! - " + Convert.ToString(CompressedBytes, 2));
         }
-
-        private int GetSizeOfCompressedBytes()=> CompressedBytes.Sum(x => System.Runtime.InteropServices.Marshal.SizeOf(x));
 
         private void Decompress()
         {
@@ -67,9 +72,12 @@ namespace Cap1ProblemasPequenos.Implementations
             stopwatch.Start();
             System.Console.WriteLine("Inicio de descompressão");
 
-            foreach (var byteFromBitString in CompressedBytes)
+            for (var i = 0; i < GetCompressedGeneSize() - 1; i += 2)
             {
-                var byteToEnqueue = GeneValues.FirstOrDefault(gene => gene.Value == byteFromBitString);
+
+                var valueToGet = CompressedBytes >> i & 0b11;
+
+                var byteToEnqueue = GeneValues.FirstOrDefault(gene => gene.Value == valueToGet);
 
                 if (byteToEnqueue.Key == 0)
                 {
@@ -77,7 +85,6 @@ namespace Cap1ProblemasPequenos.Implementations
 
                     break;
                 }
-
                 teste += byteToEnqueue.Key;
             }
 
@@ -87,7 +94,7 @@ namespace Cap1ProblemasPequenos.Implementations
 
             System.Console.WriteLine("Tamanho do gene após descompressão: " + System.Text.ASCIIEncoding.ASCII.GetByteCount(teste));
 
-            System.Console.WriteLine("Descomprimido! - " + teste);
+            System.Console.WriteLine("Descomprimido! - " + String.Join("", teste.Reverse()));
         }
     }
 }
