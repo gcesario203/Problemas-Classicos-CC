@@ -3,6 +3,7 @@ using Lib.Implementations;
 
 var testRunner = new ConsoleTestRunner("Capitulo 1 - Problemas pequenos",
                                         new FibonacciTestCase("Teste Fibonacci"),
-                                        new GeneCompresserTestCase("Teste de compressão de bits"));
+                                        new GeneCompresserTestCase("Teste de compressão de bits"),
+                                        new OneTimePadCryptoTestCase("Teste de criptografia inquebravel"));
 
 testRunner.BuildInterface();
