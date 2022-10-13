@@ -5,12 +5,12 @@ namespace Cap1ProblemasPequenos.Implementations
     public class HanoiTower
     {
         private const int NUMBER_OF_DISCS = 9;
-        private Tower TowerA { get; set; } = new Tower("Tower A");
-        private Tower TowerB { get; set; } = new Tower("Tower B");
-        private Tower TowerC { get; set; } = new Tower("Tower C");
-        private Tower TowerD { get; set; } = new Tower("Tower D");
-        private Tower TowerE { get; set; } = new Tower("Tower E");
-        private Tower TowerF { get; set; } = new Tower("Tower F");
+        public Tower TowerA { get; set; } = new Tower("Tower A");
+        public Tower TowerB { get; set; } = new Tower("Tower B");
+        public Tower TowerC { get; set; } = new Tower("Tower C");
+        public Tower TowerD { get; set; } = new Tower("Tower D");
+        public Tower TowerE { get; set; } = new Tower("Tower E");
+        public Tower TowerF { get; set; } = new Tower("Tower F");
 
         private void PopulateTowerA()
         {
@@ -24,12 +24,15 @@ namespace Cap1ProblemasPequenos.Implementations
 
             SolveHanoi(TowerB, TowerD, NUMBER_OF_DISCS, new List<Tower> { TowerC, TowerF, TowerE,TowerA  });
 
-            System.Console.WriteLine("TORRE A " + String.Join(" ", TowerA.Discs));
-            System.Console.WriteLine("TORRE B " + String.Join(" ", TowerB.Discs));
-            System.Console.WriteLine("TORRE C " + String.Join(" ", TowerC.Discs));
-            System.Console.WriteLine("TORRE D " + String.Join(" ", TowerD.Discs));
-            System.Console.WriteLine("TORRE E " + String.Join(" ", TowerE.Discs));
-            System.Console.WriteLine("TORRE F " + String.Join(" ", TowerF.Discs));
+            PrintTowerValues();
+        }
+
+        private void PrintTowerValues()
+        {
+            var towers =  this.GetType().GetProperties().Where(x => x.PropertyType == typeof(Tower));
+
+            foreach(var tower in towers)
+                System.Console.WriteLine(tower.GetValue(this).ToString());
         }
 
         public void SolveHanoi(Tower initTower, Tower endTower, int numberOfDiscs, IEnumerable<Tower> intermediateTowers)
@@ -51,7 +54,7 @@ namespace Cap1ProblemasPequenos.Implementations
                 SolveHanoi(initTower, towerWithLessDiscs, numberOfDiscs - 1, new List<Tower> { endTower });
                 SolveHanoi(initTower, endTower, 1, intermediateTowers);
                 SolveHanoi(towerWithMoreDiscs, endTower, numberOfDiscs - 1, new List<Tower> { initTower });
-                
+
             }
         }
     }

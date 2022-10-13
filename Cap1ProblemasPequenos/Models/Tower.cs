@@ -13,5 +13,7 @@ namespace Cap1ProblemasPequenos.Models
         {
             Name = name;
         }
+
+        public override string ToString() => $"{Name} - {String.Join(" ", Discs)}";
     }
 }
