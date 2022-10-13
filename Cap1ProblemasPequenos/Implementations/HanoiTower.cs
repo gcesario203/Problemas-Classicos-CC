@@ -4,7 +4,7 @@ namespace Cap1ProblemasPequenos.Implementations
 {
     public class HanoiTower
     {
-        private const int NUMBER_OF_DISCS = 3;
+        private const int NUMBER_OF_DISCS = 9;
         private Tower TowerA { get; set; } = new Tower("Tower A");
         private Tower TowerB { get; set; } = new Tower("Tower B");
         private Tower TowerC { get; set; } = new Tower("Tower C");
@@ -15,14 +15,14 @@ namespace Cap1ProblemasPequenos.Implementations
         private void PopulateTowerA()
         {
             for (var i = 1; i <= NUMBER_OF_DISCS; i++)
-                TowerA.Discs.Push(i);
+                TowerB.Discs.Push(i);
         }
 
         public HanoiTower()
         {
             PopulateTowerA();
 
-            SolveHanoi(TowerA, TowerD, NUMBER_OF_DISCS, new List<Tower> { TowerC, TowerF, TowerE, TowerB });
+            SolveHanoi(TowerB, TowerD, NUMBER_OF_DISCS, new List<Tower> { TowerC, TowerF, TowerE,TowerA  });
 
             System.Console.WriteLine("TORRE A " + String.Join(" ", TowerA.Discs));
             System.Console.WriteLine("TORRE B " + String.Join(" ", TowerB.Discs));
@@ -45,12 +45,13 @@ namespace Cap1ProblemasPequenos.Implementations
             }
             else
             {
-                foreach (var intermediumTower in intermediateTowers)
-                {
-                    SolveHanoi(initTower, intermediumTower, numberOfDiscs - 1, new List<Tower> { endTower });
-                    SolveHanoi(initTower, endTower, 1, intermediateTowers);
-                    SolveHanoi(intermediumTower, endTower, numberOfDiscs - 1, new List<Tower> { initTower });
-                }
+                var towerWithMoreDiscs = intermediateTowers.FirstOrDefault(tower => tower.TotalDiscs == intermediateTowers.Max(x => x.TotalDiscs));
+                var towerWithLessDiscs = intermediateTowers.FirstOrDefault(tower => tower.TotalDiscs == intermediateTowers.Min(x => x.TotalDiscs));
+
+                SolveHanoi(initTower, towerWithLessDiscs, numberOfDiscs - 1, new List<Tower> { endTower });
+                SolveHanoi(initTower, endTower, 1, intermediateTowers);
+                SolveHanoi(towerWithMoreDiscs, endTower, numberOfDiscs - 1, new List<Tower> { initTower });
+                
             }
         }
     }
