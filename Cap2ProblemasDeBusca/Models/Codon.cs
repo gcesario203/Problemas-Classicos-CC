@@ -7,6 +7,8 @@ namespace Cap2ProblemasDeBusca.Models
     {
         public Nucleotide[] Nucleotides { get; set; } = new Nucleotide[3];
 
+        public int NucleotidesSize { get => Nucleotides.Sum(x => (int)x);}
+
         public Codon(string nucleotides)
         {
             var nucleotideToPrepend = new List<Nucleotide>();
