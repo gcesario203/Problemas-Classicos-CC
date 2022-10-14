@@ -21,7 +21,7 @@ namespace Cap2ProblemasDeBusca.Models
                     float sparseness = 0.2f)
         {
             Start = start == null ? new LabyrinthLocation(0, 0) : start;
-            Start = goal == null ? new LabyrinthLocation(rows, columns) : goal;
+            Goal = goal == null ? new LabyrinthLocation(rows -1, columns -1) : goal;
             Rows = rows;
             Columns = columns;
             Sparseness = sparseness;
@@ -35,6 +35,8 @@ namespace Cap2ProblemasDeBusca.Models
 
             RandomFill(Rows, Columns, Sparseness);
 
+            Grid[Start.Row][Start.Column] = LabyrinthCell.START;
+            Grid[Goal.Row][Goal.Column] = LabyrinthCell.GOAL;
         }
 
         private void RandomFill(int rows, int columns, float sparseness)
@@ -43,11 +45,49 @@ namespace Cap2ProblemasDeBusca.Models
             {
                 for (var y = 0; y < columns; y++)
                 {
-                    var teste = new Random();
-                    if (teste.Next((int)Sparseness * 100, 100) < Sparseness * 100)
+                    var random = new Random();
+                    if (random.Next((int)Sparseness * 100, 100) < Sparseness * 100)
                         Grid[x][y] = LabyrinthCell.BLOCKED;
                 }
             }
+        }
+
+        public List<LabyrinthLocation> GetSuccessors(LabyrinthLocation location)
+        {
+            var returnLocation = new List<LabyrinthLocation>();
+
+            if (location.Row + 1 < this.Rows && Grid[location.Row + 1][location.Column] != LabyrinthCell.BLOCKED)
+                returnLocation.Add(new LabyrinthLocation(location.Row + 1, location.Column));
+
+            if (location.Row - 1 >= 0 && Grid[location.Row - 1][location.Column] != LabyrinthCell.BLOCKED)
+                returnLocation.Add(new LabyrinthLocation(location.Row - 1, location.Column));
+
+            if (location.Column + 1 < this.Columns && Grid[location.Row][location.Column + 1] != LabyrinthCell.BLOCKED)
+                returnLocation.Add(new LabyrinthLocation(location.Row, location.Column + 1));
+
+            if (location.Column - 1 >= 0 && Grid[location.Row][location.Column - 1] != LabyrinthCell.BLOCKED)
+                returnLocation.Add(new LabyrinthLocation(location.Row, location.Column - 1));
+
+            return returnLocation;
+        }
+        public bool GotToTheGoal(LabyrinthLocation location) => Goal.Equals(location);
+
+        public void Mark(List<LabyrinthLocation> path)
+        {
+            foreach (var location in path)
+                Grid[location.Row][location.Column] = LabyrinthCell.PATH;
+
+            Grid[Start.Row][Start.Column] = LabyrinthCell.START;
+            Grid[Goal.Row][Goal.Column] = LabyrinthCell.GOAL;
+        }
+
+        public void Clear(List<LabyrinthLocation> path)
+        {
+            foreach (var location in path)
+                Grid[location.Row][location.Column] = LabyrinthCell.EMPTY;
+
+            Grid[Start.Row][Start.Column] = LabyrinthCell.START;
+            Grid[Goal.Row][Goal.Column] = LabyrinthCell.GOAL;
         }
 
         public override string ToString()
