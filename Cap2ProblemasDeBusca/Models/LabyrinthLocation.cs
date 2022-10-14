@@ -1,9 +1,8 @@
 using System.Diagnostics.CodeAnalysis;
-using Cap2ProblemasDeBusca.Contracts;
 
 namespace Cap2ProblemasDeBusca.Models
 {
-    public class LabyrinthLocation : IEqualityComparer<LabyrinthLocation>, IComparableObject<LabyrinthLocation>
+    public class LabyrinthLocation : IEqualityComparer<LabyrinthLocation>
     {
         public int Row { get; set; }
         public int Column { get; set; }
