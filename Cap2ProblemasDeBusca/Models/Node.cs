@@ -27,7 +27,7 @@ namespace Cap2ProblemasDeBusca.Models
         public bool Equals(Node<T>? other)
         => Id == other.Id;
 
-        public Node<T>? Dfs(T initState, Delegate goalCheck, Delegate getSuccessors)
+        public Node<T>? DeepFirstSearch(T initState, Delegate goalCheck, Delegate getSuccessors)
         {
             var frontier = new Stack<Node<T>>();
 
@@ -54,6 +54,39 @@ namespace Cap2ProblemasDeBusca.Models
                     Explored.Add(child);
 
                     frontier.Push(new Node<T>(child, currentNode));
+                }
+            }
+
+            return null;
+        }
+
+        public Node<T>? BreadthFirstSearch(T initState, Delegate goalCheck, Delegate getSuccessors)
+        {
+            var frontier = new Queue<Node<T>>();
+
+            frontier.Enqueue(new Node<T>(initState, null));
+
+            while(frontier.Count != 0)
+            {
+                var currentNode = frontier.Dequeue();
+
+                var currentState = currentNode.State;
+
+                var isFinished = (bool)goalCheck.DynamicInvoke(currentState);
+
+                if(isFinished)
+                    return currentNode;
+
+                var sucessors = (List<T>)getSuccessors.DynamicInvoke(currentState);
+
+                foreach(var child in sucessors ?? new List<T>())
+                {
+                    if(Explored.Any(x => (bool)x.GetType().GetMethod("Compare").Invoke(x, new object[] { child })))
+                        continue;
+
+                    Explored.Add(child);
+
+                    frontier.Enqueue(new Node<T>(child, currentNode));
                 }
             }
 
