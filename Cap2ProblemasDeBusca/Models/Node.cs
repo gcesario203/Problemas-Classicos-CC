@@ -7,11 +7,11 @@ namespace Cap2ProblemasDeBusca.Models
 
         public Node<T> Parent {get;set;}
 
-        public float Cost {get;set;}
+        private float Cost {get;set;}
 
-        public float Heuristic {get;set;}
+        private float Heuristic {get;set;}
 
-        public HashSet<T> Explored {get;set;} = new HashSet<T>();
+        public float Priority {get => Cost + Heuristic;}
 
         public Node(T state, Node<T> parent, float cost = 0.0f, float heuristic = 0.0f)
         {
@@ -31,6 +31,8 @@ namespace Cap2ProblemasDeBusca.Models
         {
             var frontier = new Stack<Node<T>>();
 
+            var explored = new HashSet<T>();
+
             frontier.Push(new Node<T>(initState, null));
 
             while(frontier.Count != 0)
@@ -48,10 +50,10 @@ namespace Cap2ProblemasDeBusca.Models
 
                 foreach(var child in sucessors ?? new List<T>())
                 {
-                    if(Explored.Any(x => (bool)x.GetType().GetMethod("Compare").Invoke(x, new object[] { child })))
+                    if(explored.Any(x => (bool)x.GetType().GetMethod("Compare").Invoke(x, new object[] { child })))
                         continue;
 
-                    Explored.Add(child);
+                    explored.Add(child);
 
                     frontier.Push(new Node<T>(child, currentNode));
                 }
@@ -63,6 +65,8 @@ namespace Cap2ProblemasDeBusca.Models
         public Node<T>? BreadthFirstSearch(T initState, Delegate goalCheck, Delegate getSuccessors)
         {
             var frontier = new Queue<Node<T>>();
+
+            var explored = new HashSet<T>();
 
             frontier.Enqueue(new Node<T>(initState, null));
 
@@ -81,10 +85,10 @@ namespace Cap2ProblemasDeBusca.Models
 
                 foreach(var child in sucessors ?? new List<T>())
                 {
-                    if(Explored.Any(x => (bool)x.GetType().GetMethod("Compare").Invoke(x, new object[] { child })))
+                    if(explored.Any(x => (bool)x.GetType().GetMethod("Compare").Invoke(x, new object[] { child })))
                         continue;
 
-                    Explored.Add(child);
+                    explored.Add(child);
 
                     frontier.Enqueue(new Node<T>(child, currentNode));
                 }

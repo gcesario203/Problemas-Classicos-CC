@@ -14,6 +14,10 @@ namespace Cap2ProblemasDeBusca.Models
 
         public float Sparseness { get; set; }
 
+        public Maze()
+        {
+            
+        }
         public Maze(LabyrinthLocation start,
                     LabyrinthLocation goal,
                     int rows = 10,
@@ -21,7 +25,7 @@ namespace Cap2ProblemasDeBusca.Models
                     float sparseness = 0.2f)
         {
             Start = start == null ? new LabyrinthLocation(0, 0) : start;
-            Goal = goal == null ? new LabyrinthLocation(rows -1, columns -1) : goal;
+            Goal = goal == null ? new LabyrinthLocation(rows - 1, columns - 1) : goal;
             Rows = rows;
             Columns = columns;
             Sparseness = sparseness;
@@ -88,6 +92,17 @@ namespace Cap2ProblemasDeBusca.Models
 
             Grid[Start.Row][Start.Column] = LabyrinthCell.START;
             Grid[Goal.Row][Goal.Column] = LabyrinthCell.GOAL;
+        }
+
+        public Delegate EuclidianDistance()
+        => DistanceBetweenLocations;
+
+        public double DistanceBetweenLocations(LabyrinthLocation actualLocation, LabyrinthLocation locationToCompare)
+        {
+            var xDelta = actualLocation.Column - locationToCompare.Column;
+            var yDelta = actualLocation.Row - locationToCompare.Row;
+
+            return (Math.Sqrt((xDelta * xDelta) + (yDelta * yDelta)));
         }
 
         public override string ToString()

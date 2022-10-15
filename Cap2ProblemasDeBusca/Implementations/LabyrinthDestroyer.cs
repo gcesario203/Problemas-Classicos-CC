@@ -14,6 +14,8 @@ namespace Cap2ProblemasDeBusca.Implementations
 
             var solutionOne = parentNode.DeepFirstSearch(_maze.Start, _maze.GotToTheGoal,_maze.GetSuccessors);
 
+            // var teste = _maze.EuclidianDistance().DynamicInvoke(_maze.Start, _maze.Goal);
+
             if(solutionOne == null)
                 System.Console.WriteLine("Sem soluções");
             else
@@ -24,10 +26,10 @@ namespace Cap2ProblemasDeBusca.Implementations
 
                 System.Console.WriteLine(_maze.ToString());
 
+                System.Console.WriteLine($"DFS levou {pathOne.Count} passos para ser concluido");
+
                 _maze.Clear(pathOne);
             }
-            
-            parentNode.Explored = new HashSet<LabyrinthLocation>();
 
             var solutionTwo = parentNode.BreadthFirstSearch(_maze.Start, _maze.GotToTheGoal,_maze.GetSuccessors);
             if(solutionTwo == null)
@@ -39,6 +41,8 @@ namespace Cap2ProblemasDeBusca.Implementations
                 _maze.Mark(pathOne);
 
                 System.Console.WriteLine(_maze.ToString());
+
+                System.Console.WriteLine($"BFS levou {pathOne.Count} passos para ser concluido");
 
                 _maze.Clear(pathOne);
             }

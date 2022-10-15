@@ -2,7 +2,7 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace Cap2ProblemasDeBusca.Models
 {
-    public class LabyrinthLocation : IEqualityComparer<LabyrinthLocation>
+    public class LabyrinthLocation : IEqualityComparer<LabyrinthLocation>, IEquatable<LabyrinthLocation>
     {
         public int Row { get; set; }
         public int Column { get; set; }
