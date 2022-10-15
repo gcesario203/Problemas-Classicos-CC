@@ -94,15 +94,20 @@ namespace Cap2ProblemasDeBusca.Models
             Grid[Goal.Row][Goal.Column] = LabyrinthCell.GOAL;
         }
 
-        public Delegate EuclidianDistance()
-        => DistanceBetweenLocations;
-
-        public double DistanceBetweenLocations(LabyrinthLocation actualLocation, LabyrinthLocation locationToCompare)
+        public double EuclidianDistance(LabyrinthLocation actualLocation, LabyrinthLocation locationToCompare)
         {
             var xDelta = actualLocation.Column - locationToCompare.Column;
             var yDelta = actualLocation.Row - locationToCompare.Row;
 
             return (Math.Sqrt((xDelta * xDelta) + (yDelta * yDelta)));
+        }
+
+        public double ManhattanDistance(LabyrinthLocation actualLocation, LabyrinthLocation locationToCompare)
+        {
+            var xDelta = Math.Abs(actualLocation.Column - locationToCompare.Column);
+            var yDelta = Math.Abs(actualLocation.Row - locationToCompare.Row);
+
+            return (xDelta + yDelta);
         }
 
         public override string ToString()

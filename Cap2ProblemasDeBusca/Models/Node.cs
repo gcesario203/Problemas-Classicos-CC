@@ -1,3 +1,5 @@
+using Cap2ProblemasDeBusca.Utils;
+
 namespace Cap2ProblemasDeBusca.Models
 {
     public class Node<T> : IEquatable<Node<T>>
@@ -5,15 +7,15 @@ namespace Cap2ProblemasDeBusca.Models
         public Guid Id = Guid.NewGuid();
         public T State { get; set; }
 
-        public Node<T> Parent {get;set;}
+        public Node<T> Parent { get; set; }
 
-        private float Cost {get;set;}
+        private double Cost { get; set; }
 
-        private float Heuristic {get;set;}
+        private double Heuristic { get; set; }
 
-        public float Priority {get => Cost + Heuristic;}
+        public double Priority { get => Cost + Heuristic; }
 
-        public Node(T state, Node<T> parent, float cost = 0.0f, float heuristic = 0.0f)
+        public Node(T state, Node<T> parent, double cost = 0.0f, double heuristic = 0.0f)
         {
             State = state;
             Parent = parent;
@@ -35,7 +37,7 @@ namespace Cap2ProblemasDeBusca.Models
 
             frontier.Push(new Node<T>(initState, null));
 
-            while(frontier.Count != 0)
+            while (frontier.Count != 0)
             {
                 var currentNode = frontier.Pop();
 
@@ -43,14 +45,14 @@ namespace Cap2ProblemasDeBusca.Models
 
                 var isFinished = (bool)goalCheck.DynamicInvoke(currentState);
 
-                if(isFinished)
+                if (isFinished)
                     return currentNode;
 
                 var sucessors = (List<T>)getSuccessors.DynamicInvoke(currentState);
 
-                foreach(var child in sucessors ?? new List<T>())
+                foreach (var child in sucessors ?? new List<T>())
                 {
-                    if(explored.Any(x => (bool)x.GetType().GetMethod("Compare").Invoke(x, new object[] { child })))
+                    if (explored.Any(x => (bool)x.GetType().GetMethod("Compare").Invoke(x, new object[] { child })))
                         continue;
 
                     explored.Add(child);
@@ -70,7 +72,7 @@ namespace Cap2ProblemasDeBusca.Models
 
             frontier.Enqueue(new Node<T>(initState, null));
 
-            while(frontier.Count != 0)
+            while (frontier.Count != 0)
             {
                 var currentNode = frontier.Dequeue();
 
@@ -78,14 +80,14 @@ namespace Cap2ProblemasDeBusca.Models
 
                 var isFinished = (bool)goalCheck.DynamicInvoke(currentState);
 
-                if(isFinished)
+                if (isFinished)
                     return currentNode;
 
                 var sucessors = (List<T>)getSuccessors.DynamicInvoke(currentState);
 
-                foreach(var child in sucessors ?? new List<T>())
+                foreach (var child in sucessors ?? new List<T>())
                 {
-                    if(explored.Any(x => (bool)x.GetType().GetMethod("Compare").Invoke(x, new object[] { child })))
+                    if (explored.Any(x => (bool)x.GetType().GetMethod("Compare").Invoke(x, new object[] { child })))
                         continue;
 
                     explored.Add(child);
@@ -97,9 +99,50 @@ namespace Cap2ProblemasDeBusca.Models
             return null;
         }
 
+        public Node<T>? AStar(T initState, T finalState, Delegate goalCheck, Delegate getSuccessors, Delegate getHeuristic)
+        {
+            var frontier = new List<Node<T>>();
+
+            frontier.Add(new Node<T>(initState, null, 0.0f, (double)getHeuristic.DynamicInvoke(initState, finalState)));
+
+            var explored = new Dictionary<T, double>();
+
+            explored.Add(initState, 0.0f);
+
+            while (frontier.Count != 0)
+            {
+                var currentNode = frontier.PushItemByFunction(x => x.Priority == frontier.Max(w => w.Priority));
+
+                if (currentNode == null)
+                    continue;
+
+                var currentState = currentNode.State;
+
+                if ((bool)goalCheck.DynamicInvoke(currentState))
+                    return currentNode;
+
+                var sucessors = (List<T>)getSuccessors.DynamicInvoke(currentState);
+
+                foreach (var child in sucessors ?? new List<T>())
+                {
+                    var newCost = currentNode.Cost + 1;
+                    Func<KeyValuePair<T, double>, bool> predicate = x => (bool)x.Key.GetType().GetMethod("Compare").Invoke(x.Key, new object[] { child });
+                    
+                    if (explored.Any(predicate) || explored.FirstOrDefault(predicate).Value > newCost)
+                        continue;
+
+                    explored.Add(child, newCost);
+
+                    frontier.AddAndOrderByFunction(new Node<T>(child, currentNode, newCost, (double)getHeuristic.DynamicInvoke(child, finalState)), x=> x.Priority);
+                }
+            }
+
+            return null;
+        }
+
         public List<T> NodeToPath(Node<T> node)
         {
-            var path = new List<T>{ node.State };
+            var path = new List<T> { node.State };
 
             while (node.Parent != null)
             {

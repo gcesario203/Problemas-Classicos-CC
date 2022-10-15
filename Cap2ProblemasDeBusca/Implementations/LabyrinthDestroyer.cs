@@ -14,7 +14,6 @@ namespace Cap2ProblemasDeBusca.Implementations
 
             var solutionOne = parentNode.DeepFirstSearch(_maze.Start, _maze.GotToTheGoal,_maze.GetSuccessors);
 
-            // var teste = _maze.EuclidianDistance().DynamicInvoke(_maze.Start, _maze.Goal);
 
             if(solutionOne == null)
                 System.Console.WriteLine("Sem soluções");
@@ -43,6 +42,22 @@ namespace Cap2ProblemasDeBusca.Implementations
                 System.Console.WriteLine(_maze.ToString());
 
                 System.Console.WriteLine($"BFS levou {pathOne.Count} passos para ser concluido");
+
+                _maze.Clear(pathOne);
+            }
+
+            var solutionThree = parentNode.AStar(_maze.Start, _maze.Goal, _maze.GotToTheGoal,_maze.GetSuccessors, _maze.ManhattanDistance);
+            if(solutionThree == null)
+                System.Console.WriteLine("Sem soluções");
+            else
+            {
+                var pathOne = parentNode.NodeToPath(solutionThree);
+
+                _maze.Mark(pathOne);
+
+                System.Console.WriteLine(_maze.ToString());
+
+                System.Console.WriteLine($"A* levou {pathOne.Count} passos para ser concluido");
 
                 _maze.Clear(pathOne);
             }
