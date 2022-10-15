@@ -1,6 +1,6 @@
-using Cap2ProblemasDeBusca.Utils;
+using Lib.Utils;
 
-namespace Cap2ProblemasDeBusca.Models
+namespace Lib.Models
 {
     public class Node<T> : IEquatable<Node<T>>
     {
@@ -52,7 +52,7 @@ namespace Cap2ProblemasDeBusca.Models
 
                 foreach (var child in sucessors ?? new List<T>())
                 {
-                    if (explored.Any(x => (bool)x.GetType().GetMethod("Compare").Invoke(x, new object[] { child })))
+                    if (explored.Any(x => (bool)x.GetType().GetMethods().FirstOrDefault(x => x.Name == "Equals").Invoke(x, new object[] { child })))
                         continue;
 
                     explored.Add(child);
@@ -87,7 +87,7 @@ namespace Cap2ProblemasDeBusca.Models
 
                 foreach (var child in sucessors ?? new List<T>())
                 {
-                    if (explored.Any(x => (bool)x.GetType().GetMethod("Compare").Invoke(x, new object[] { child })))
+                    if (explored.Any(x => (bool)x.GetType().GetMethods().FirstOrDefault(x => x.Name == "Equals").Invoke(x, new object[] { child })))
                         continue;
 
                     explored.Add(child);
@@ -126,7 +126,7 @@ namespace Cap2ProblemasDeBusca.Models
                 foreach (var child in sucessors ?? new List<T>())
                 {
                     var newCost = currentNode.Cost + 1;
-                    Func<KeyValuePair<T, double>, bool> predicate = x => (bool)x.Key.GetType().GetMethod("Compare").Invoke(x.Key, new object[] { child });
+                    Func<KeyValuePair<T, double>, bool> predicate = x => (bool)x.Key.GetType().GetMethods().FirstOrDefault(x => x.Name == "Equals").Invoke(x.Key, new object[] { child });
                     
                     if (explored.Any(predicate) || explored.FirstOrDefault(predicate).Value > newCost)
                         continue;

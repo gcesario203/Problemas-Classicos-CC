@@ -1,4 +1,5 @@
 using Cap2ProblemasDeBusca.Models;
+using Lib.Models;
 
 namespace Cap2ProblemasDeBusca.Implementations
 {

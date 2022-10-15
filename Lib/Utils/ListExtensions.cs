@@ -1,4 +1,4 @@
-namespace Cap2ProblemasDeBusca.Utils
+namespace Lib.Utils
 {
     public static class ListExtensions
     {
