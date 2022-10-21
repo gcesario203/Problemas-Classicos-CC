@@ -25,8 +25,6 @@ namespace Lib.Implementations
 
                 BuildMenuOptions();
 
-                System.Console.WriteLine("0 - Finalizar aplicação");
-
                 var choice = Console.ReadLine();
 
                 if (string.IsNullOrEmpty(choice) || !EnableChoices.Contains(choice))
@@ -55,6 +53,9 @@ namespace Lib.Implementations
                 EnableChoices.Add((i + 1).ToString());
                 System.Console.WriteLine($"{i + 1} - {TestCases.ToArray()[i].TestName}");
             };
+
+
+            System.Console.WriteLine("0 - Finalizar aplicação");
         }
     }
 }
