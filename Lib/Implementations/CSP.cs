@@ -63,9 +63,7 @@ namespace Lib.Implementations
             if (assignment.Count == Variables.Count)
                 return assignment;
 
-            var unassignedVariables = Variables.Where(x => !assignment.Keys.Contains(x)).ToList();
-
-            var firstUnassigned = unassignedVariables.FirstOrDefault();
+            var firstUnassigned = Variables.Where(x => !assignment.Keys.Contains(x)).FirstOrDefault();
 
             if (firstUnassigned == null)
                 return null;
