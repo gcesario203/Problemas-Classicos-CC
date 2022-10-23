@@ -55,7 +55,7 @@ namespace Lib.Implementations
             return true;
         }
 
-        public Dictionary<TVariable, TDomain>? BackTrackingSearch(Dictionary<TVariable, TDomain> assignment)
+        public Dictionary<TVariable, TDomain>? BackTrackingSearch(Dictionary<TVariable, TDomain> assignment = null)
         {
             if (assignment == null)
                 assignment = new Dictionary<TVariable, TDomain>();
